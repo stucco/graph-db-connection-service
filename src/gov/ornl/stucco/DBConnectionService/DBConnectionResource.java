@@ -34,7 +34,8 @@ public class DBConnectionResource extends ResourceConfig {
 		//register(DBConnectionSingleton.class);
 		//this.db = DBConnectionSingleton.db;
 		db = new InMemoryDBConnection();
-		db.load(true); //TODO this is for testing & demo, remove later.
+		//db.load(true); //TODO this is for testing & demo, remove later.
+		db.loadStateFromJSON("/tmp/stuccoDB/sample_data.json"); //TODO see above.
 	}
 	
 	/*
@@ -167,7 +168,7 @@ public class DBConnectionResource extends ResourceConfig {
 	@Path("search")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
 	public String search(@QueryParam("q") String query) {
-		System.out.println("query is: " + query);
+		System.out.println("search() query is: " + query);
 		JSONObject queryObj = new JSONObject(query);
 		String pageString = queryObj.optString("page");
 		if(pageString != null){
@@ -180,6 +181,7 @@ public class DBConnectionResource extends ResourceConfig {
 		
 		JSONObject ret = new JSONObject();
 		JSONArray results = searchResults( queryObj);
+		System.out.println("results are: " + results);
 		ret.put("results", results); //TODO
 		ret.put("count",results.length());//TODO
 		ret.put("success",true);//TODO
