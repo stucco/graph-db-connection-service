@@ -192,11 +192,19 @@ public class DBConnectionResource extends ResourceConfig {
 	
 	private JSONArray searchResults(JSONObject queryObj) {
 		List<Constraint> constraints = new LinkedList<Constraint>();
+		Constraint c;
 		for(Object key : queryObj.keySet()){
 			String val = queryObj.getString((String) key);
 			System.out.println("query includes [" + key + ", " + val + "]");
-			//TODO: check which fields need special handling, eg. description
-			Constraint c = new Constraint((String)key, Constraint.Condition.eq, val);
+			
+			//TODO: check and correct case of keys?  eg. change "VertexType" to "vertexType"?  (or handle in ui code.)
+			//check fields which need special handling, eg. description
+			//TODO: any other fields?
+			if(key.equals("description")){
+				c = new Constraint((String)key, Constraint.Condition.in, val);
+			}else{
+				c = new Constraint((String)key, Constraint.Condition.eq, val);
+			}
 			constraints.add(c);
 		}
 		List<String> foundIDs = db.getVertIDsByConstraints(constraints);
