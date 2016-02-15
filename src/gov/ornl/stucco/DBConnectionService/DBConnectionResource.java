@@ -1,5 +1,6 @@
 package gov.ornl.stucco.DBConnectionService;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -48,12 +49,35 @@ public class DBConnectionResource extends ResourceConfig {
 	@GET
 	@Path("inEdges/{vertID}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
-	public String getInEdges(@PathParam("vertID") String vertID) {
+	public String getInEdges(@PathParam("vertID") String vertID, @QueryParam("q") String query) {
+		Map<String, Integer> pageInfo = null;
+		if(query != null){
+			JSONObject queryObj = new JSONObject(query);
+			pageInfo = findPageInfo( queryObj );
+		}else{
+			pageInfo = findPageInfo( new JSONObject() );//to get defaults
+		}
+		
 		JSONObject ret = new JSONObject();
 		try {
 			JSONArray results = getInEdgesResults(vertID);
-			ret.put("results", results);
-			ret.put("count",results.length());//TODO verify
+			//TODO: it would be faster to pass the start/end to getInEdgesResults() above.
+			int page = pageInfo.get("page");
+			int pageSize = pageInfo.get("pageSize");
+			JSONArray selectedResults;
+			if(pageSize > 0){
+				selectedResults = new JSONArray();
+				int start = page * pageSize;
+				int end = (page + 1) * pageSize;
+				for(int i = start; i<results.length() && i<end; i++){
+					selectedResults.put( results.get(i) );
+				}
+			}else{
+				selectedResults = results;
+			}
+			
+			ret.put("results", selectedResults); //TODO
+			ret.put("count",results.length());//TODO total set size, or returned subset size?
 			ret.put("success",true);//TODO
 			ret.put("version", ""); //TODO
 			ret.put("queryTime", ""); //TODO
@@ -95,12 +119,35 @@ public class DBConnectionResource extends ResourceConfig {
 	@GET
 	@Path("outEdges/{vertID}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
-	public String getOutEdges(@PathParam("vertID") String vertID) {
+	public String getOutEdges(@PathParam("vertID") String vertID, @QueryParam("q") String query) {
+		Map<String, Integer> pageInfo = null;
+		if(query != null){
+			JSONObject queryObj = new JSONObject(query);
+			pageInfo = findPageInfo( queryObj );
+		}else{
+			pageInfo = findPageInfo( new JSONObject() );//to get defaults
+		}
+		
 		JSONObject ret = new JSONObject();
 		try {
 			JSONArray results = getOutEdgesResults(vertID);
-			ret.put("results", results);
-			ret.put("count",results.length());//TODO verify
+			//TODO: it would be faster to pass the start/end to getInEdgesResults() above.
+			int page = pageInfo.get("page");
+			int pageSize = pageInfo.get("pageSize");
+			JSONArray selectedResults;
+			if(pageSize > 0){
+				selectedResults = new JSONArray();
+				int start = page * pageSize;
+				int end = (page + 1) * pageSize;
+				for(int i = start; i<results.length() && i<end; i++){
+					selectedResults.put( results.get(i) );
+				}
+			}else{
+				selectedResults = results;
+			}
+			
+			ret.put("results", selectedResults); //TODO
+			ret.put("count",results.length());//TODO total set size, or returned subset size?
 			ret.put("success",true);//TODO
 			ret.put("version", ""); //TODO
 			ret.put("queryTime", ""); //TODO
@@ -170,20 +217,31 @@ public class DBConnectionResource extends ResourceConfig {
 	public String search(@QueryParam("q") String query) {
 		System.out.println("search() query is: " + query);
 		JSONObject queryObj = new JSONObject(query);
-		String pageString = queryObj.optString("page");
-		if(pageString != null){
-			queryObj.remove("page");
-		}
-		String pageSizeString = queryObj.optString("pageSize");
-		if(pageSizeString != null){
-			queryObj.remove("pageSize");
-		}
+		
+		Map<String, Integer> pageInfo = findPageInfo( queryObj );
+		queryObj.remove("page");
+		queryObj.remove("pageSize");
 		
 		JSONObject ret = new JSONObject();
 		JSONArray results = searchResults( queryObj);
 		System.out.println("results are: " + results);
-		ret.put("results", results); //TODO
-		ret.put("count",results.length());//TODO
+		
+		int page = pageInfo.get("page");
+		int pageSize = pageInfo.get("pageSize");
+		JSONArray selectedResults;
+		if(pageSize > 0){
+			selectedResults = new JSONArray();
+			int start = page * pageSize;
+			int end = (page + 1) * pageSize;
+			for(int i = start; i<results.length() && i<end; i++){
+				selectedResults.put( results.get(i) );
+			}
+		}else{
+			selectedResults = results;
+		}
+		
+		ret.put("results", selectedResults); //TODO
+		ret.put("count",results.length());//TODO total set size, or returned subset size?
 		ret.put("success",true);//TODO
 		ret.put("version", ""); //TODO
 		ret.put("queryTime", ""); //TODO
@@ -234,6 +292,35 @@ public class DBConnectionResource extends ResourceConfig {
 		int count = db.getEdgeCount();
 		ret.put("count", count);
 		return ret.toString();
+	}
+	
+	private Map<String, Integer> findPageInfo( JSONObject queryObj ){
+		Map<String, Integer> info = new HashMap<String, Integer>();
+
+		int page = 0;
+		int pageSize = 0;
+		
+		//handles page vals as str or int.
+		String pageString = queryObj.optString("page");
+		if(pageString == null || pageString.equals("")){
+			page = queryObj.optInt("page");
+		}else{
+			page = Integer.parseInt(pageString);
+		}
+		
+		String pageSizeString = queryObj.optString("pageSize");
+		if(pageSizeString == null || pageSizeString.equals("")){
+			pageSize = queryObj.optInt("pageSize");
+		}else{
+			pageSize = Integer.parseInt(pageSizeString);
+		}
+		
+		info.put("page", page);
+		info.put("pageSize", pageSize);	
+		
+		System.out.println("page info is: " + info);
+		
+		return info;
 	}
 
 } 
