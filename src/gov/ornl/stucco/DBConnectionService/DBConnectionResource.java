@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -28,15 +29,20 @@ import gov.ornl.stucco.DBClient.InvalidArgumentException;
 @Path("/api")
 public class DBConnectionResource extends ResourceConfig {
 	
+	@Inject
+    private DBConnectionSingleton dbSingleton;
+	
 	InMemoryDBConnection db;
 	
 	public DBConnectionResource(){
 		//TODO: use a singleton to hold the dbconnection object.
 		//register(DBConnectionSingleton.class);
 		//this.db = DBConnectionSingleton.db;
-		db = new InMemoryDBConnection();
+		//db = new InMemoryDBConnection();
 		//db.load(true); //TODO this is for testing & demo, remove later.
-		db.loadStateFromJSON("/tmp/stuccoDB/sample_data.json"); //TODO see above.
+		//db.loadStateFromJSON("/tmp/stuccoDB/sample_data.json"); //TODO see above.
+		
+		db = dbSingleton.db;
 	}
 	
 	/*
