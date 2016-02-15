@@ -286,6 +286,9 @@ public class DBConnectionResource extends ResourceConfig {
 		JSONObject ret = new JSONObject();
 		int count = db.getVertCount();
 		ret.put("count", count);
+		ret.put("success",true);//TODO
+		ret.put("version", ""); //TODO
+		ret.put("queryTime", ""); //TODO
 		return ret.toString();
 	}
 	
@@ -296,6 +299,9 @@ public class DBConnectionResource extends ResourceConfig {
 		JSONObject ret = new JSONObject();
 		int count = db.getEdgeCount();
 		ret.put("count", count);
+		ret.put("success",true);//TODO
+		ret.put("version", ""); //TODO
+		ret.put("queryTime", ""); //TODO
 		return ret.toString();
 	}
 	
