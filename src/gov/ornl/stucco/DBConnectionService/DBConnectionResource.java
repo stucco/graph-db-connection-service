@@ -35,22 +35,8 @@ public class DBConnectionResource extends ResourceConfig {
 	InMemoryDBConnection db;
 	
 	public DBConnectionResource(){
-		//TODO: use a singleton to hold the dbconnection object.
-		//register(DBConnectionSingleton.class);
-		//this.db = DBConnectionSingleton.db;
-		//db = new InMemoryDBConnection();
-		//db.load(true); //TODO this is for testing & demo, remove later.
-		//db.loadStateFromJSON("/tmp/stuccoDB/sample_data.json"); //TODO see above.
-		
 		db = dbSingleton.db;
 	}
-	
-	/*
-	@Path("{todo}")
-	public TodoResource getTodo(@PathParam("todo") String id) {
-		return new TodoResource(uriInfo, request, id);
-	}
-	*/
 
 	@GET
 	@Path("inEdges/{vertID}")
