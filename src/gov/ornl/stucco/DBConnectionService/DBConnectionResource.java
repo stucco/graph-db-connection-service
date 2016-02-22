@@ -254,7 +254,7 @@ public class DBConnectionResource extends ResourceConfig {
 				//TODO: check and correct case of keys?  eg. change "VertexType" to "vertexType"?  (or handle in ui code.)
 				//check fields which need special handling, eg. description
 				//TODO: any other fields?
-				if(key.equals("description")){
+				if(key.equals("description") || key.equals("sourceDocument")){
 					c = new Constraint((String)key, Constraint.Condition.in, val);
 				}else{
 					c = new Constraint((String)key, Constraint.Condition.eq, val);
