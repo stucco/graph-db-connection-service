@@ -274,9 +274,20 @@ public class DBConnectionResource extends ResourceConfig {
 	@GET
 	@Path("count/vertices")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
-	public String countVertices() {
+	public String countVertices(@QueryParam("q") String query) {
+		int count;
+		if(query != null){
+			System.out.println("search() query is: " + query);
+			JSONObject queryObj = new JSONObject(query);
+			queryObj.remove("page");
+			queryObj.remove("pageSize");
+			JSONArray results = searchResults( queryObj);
+			count = results.length();
+		}else{
+			count = db.getVertCount();
+		}
+
 		JSONObject ret = new JSONObject();
-		int count = db.getVertCount();
 		ret.put("count", count);
 		ret.put("success",true);//TODO
 		ret.put("version", ""); //TODO
@@ -287,9 +298,11 @@ public class DBConnectionResource extends ResourceConfig {
 	@GET
 	@Path("count/edges")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
-	public String countEdges() {
+	public String countEdges(@QueryParam("q") String query) {
+		int count;
+		//TODO: can't query & count edges currently.  Is that even useful to have?
+		count = db.getEdgeCount();
 		JSONObject ret = new JSONObject();
-		int count = db.getEdgeCount();
 		ret.put("count", count);
 		ret.put("success",true);//TODO
 		ret.put("version", ""); //TODO
