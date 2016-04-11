@@ -47,9 +47,6 @@
 			<version>2.7.1</version> </dependency -->
 		<!-- stucco dependencies -->
 	</dependencies>
-	<modules>
-		<module>rexster-client-java</module>
-	</modules>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
@@ -58,10 +55,10 @@
 				<artifactId>maven-scm-plugin</artifactId>
 				<version>1.9</version>
 				<configuration>
-					<connectionUrl>scm:git:https://github.com/stucco/${module.name}.git</connectionUrl>
-					<checkoutDirectory>${module.name}</checkoutDirectory>
+					<connectionUrl>scm:git:https://github.com/stucco/graph-db-connection.git</connectionUrl>
+					<checkoutDirectory>graph-db-connection</checkoutDirectory>
 					<scmVersionType>branch</scmVersionType>
-					<scmVersion>${branch.name}</scmVersion>
+					<scmVersion>ornl-integration</scmVersion>
 				</configuration>
 			</plugin>
 			<plugin>

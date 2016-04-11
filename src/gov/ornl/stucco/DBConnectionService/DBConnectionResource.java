@@ -19,12 +19,9 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gov.ornl.stucco.DBClient.Constraint;
-import gov.ornl.stucco.DBClient.InMemoryDBConnection;
-//import gov.ornl.stucco.DBClient.Constraint;
-//import gov.ornl.stucco.DBClient.Constraint.Condition;
-//import gov.ornl.stucco.DBClient.InvalidStateException;
-import gov.ornl.stucco.DBClient.InvalidArgumentException;
+import gov.pnnl.stucco.dbconnect.Condition;
+import gov.pnnl.stucco.dbconnect.DBConnectionAlignment;
+import gov.pnnl.stucco.dbconnect.DBConstraint;
 
 @Path("/api")
 public class DBConnectionResource extends ResourceConfig {
@@ -32,10 +29,10 @@ public class DBConnectionResource extends ResourceConfig {
 	@Inject
     private DBConnectionSingleton dbSingleton;
 	
-	InMemoryDBConnection db;
+	DBConnectionAlignment db;
 	
 	public DBConnectionResource(){
-		db = dbSingleton.db;
+		db = dbSingleton.getDB();
 	}
 
 	@GET
@@ -73,14 +70,14 @@ public class DBConnectionResource extends ResourceConfig {
 			ret.put("success",true);//TODO
 			ret.put("version", ""); //TODO
 			ret.put("queryTime", ""); //TODO
-		} catch (InvalidArgumentException e) {
+		} catch (IllegalArgumentException e) {
 			e.printStackTrace();//TODO proper logging
 			ret.put("Error:", "Illegal State Exception");
 		}
 		return ret.toString();
 	}
 	
-	private JSONArray getInEdgesResults(String vertID) throws InvalidArgumentException {
+	private JSONArray getInEdgesResults(String vertID) throws IllegalArgumentException {
 		List<Map<String, Object>> foundEdges = db.getInEdges(vertID);
 		System.out.println("inEdges found " + foundEdges.size() + " edges.");
 		JSONArray results = new JSONArray();
@@ -143,14 +140,14 @@ public class DBConnectionResource extends ResourceConfig {
 			ret.put("success",true);//TODO
 			ret.put("version", ""); //TODO
 			ret.put("queryTime", ""); //TODO
-		} catch (InvalidArgumentException e) {
+		} catch (IllegalArgumentException e) {
 			e.printStackTrace();//TODO proper logging
 			ret.put("Error:", "Illegal State Exception");
 		}
 		return ret.toString();
 	}
 	
-	private JSONArray getOutEdgesResults(String vertID) throws InvalidArgumentException {
+	private JSONArray getOutEdgesResults(String vertID) throws IllegalArgumentException {
 		JSONArray results = new JSONArray();
 		List<Map<String, Object>> foundEdges = db.getOutEdges(vertID);
 		for(Map<String,Object> edge : foundEdges){
@@ -241,8 +238,8 @@ public class DBConnectionResource extends ResourceConfig {
 	}
 	
 	private JSONArray searchResults(JSONObject queryObj) {
-		List<Constraint> constraints = new LinkedList<Constraint>();
-		Constraint c;
+		List<DBConstraint> constraints = new LinkedList<DBConstraint>();
+		DBConstraint c;
 		for(Object key : queryObj.keySet()){
 			//TODO: proper handling for non-strings, like {"description":["foo","bar"]}, which ui can generate
 			String val = queryObj.optString((String) key);
@@ -255,9 +252,9 @@ public class DBConnectionResource extends ResourceConfig {
 				//check fields which need special handling, eg. description
 				//TODO: any other fields?
 				if(key.equals("description") || key.equals("sourceDocument")){
-					c = new Constraint((String)key, Constraint.Condition.in, val);
+					c = db.getConstraint((String)key, Condition.contains, val);
 				}else{
-					c = new Constraint((String)key, Constraint.Condition.eq, val);
+					c = db.getConstraint((String)key, Condition.eq, val);
 				}
 				constraints.add(c);
 			}
