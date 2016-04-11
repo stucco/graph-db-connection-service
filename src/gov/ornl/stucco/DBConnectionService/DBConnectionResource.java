@@ -26,9 +26,6 @@ import gov.pnnl.stucco.dbconnect.DBConstraint;
 @Path("/api")
 public class DBConnectionResource extends ResourceConfig {
 
-    //@Inject
-    //private DBConnectionSingleton dbSingleton;
-
     DBConnectionAlignment db;
 
     public DBConnectionResource(DBConnectionSingleton dbSingleton){

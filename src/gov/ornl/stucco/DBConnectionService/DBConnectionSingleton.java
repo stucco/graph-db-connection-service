@@ -42,15 +42,7 @@ public class DBConnectionSingleton {
         //if using INMEMORY, load some existing state.
         if( type.equals("INMEMORY")){
             InMemoryDBConnection inMemoryDB = (InMemoryDBConnection)db;
-            //inMemoryDB.load(true); //TODO this is for testing & demo, remove later.
-            //inMemoryDB.loadStateFromJSON("/home/euf/stuccoDB/extractor_tests_output_small.json"); //TODO see above.
-            //inMemoryDB.countVertexTypes();
-            //inMemoryDB.loadStateFromJSON("/home/euf/stuccoDB/fireeye-pivy-report_demo.json"); //TODO see above.
-            //inMemoryDB.countVertexTypes();
-            //inMemoryDB.loadVertices("/home/euf/stuccoDB/testData/vertices.json"); //TODO see above.
-            //inMemoryDB.loadEdges("/home/euf/stuccoDB/testData/edges.json"); //TODO see above.
-            //inMemoryDB.loadStateFromJSON("/home/euf/stuccoDB/testData/asdf.json"); //TODO see above.
-            inMemoryDB.loadState("/home/euf/stuccoDB/graph.json"); //TODO see above.
+            inMemoryDB.loadState("/home/euf/stuccoDB/graph.json"); //TODO: this is for testing & demo, change as needed.
         }
         System.out.println("SINGLETON WAS CREATED!!");
     }

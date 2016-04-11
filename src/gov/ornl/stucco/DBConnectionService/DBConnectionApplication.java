@@ -9,22 +9,6 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
 
-/*
-@ApplicationPath("/*")
-public class DBConnectionApplication extends Application {
-
-    @Override
-    public Set<Class<?>> getClasses() {
-        Set<Class<?>> classes = new HashSet<>();
-        classes.add(DBConnectionResource.class);
-        classes.add(DBConnectionSingletonFeature.class);
-        return classes;
-    }
-
-}
-*/
-
-//public class DBConnectionApplication extends ResourceConfig {
 public class DBConnectionApplication{
 
     private final static int DEFAULT_API_PORT = 8080;
