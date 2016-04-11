@@ -4,7 +4,7 @@
 	<groupId>gov.ornl.stucco</groupId>
 	<artifactId>DBConnectionService</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -18,15 +18,18 @@
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish.jersey.containers</groupId>
-			<artifactId>jersey-container-servlet</artifactId>
-			<version>2.22</version>
+			<artifactId>jersey-container-jdk-http</artifactId>
+			<version>2.22.2</version>
 		</dependency>
-		<!-- if you are using Jersey client specific features without the server 
-			side -->
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-server</artifactId>
+			<version>2.22.2</version>
+		</dependency>
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
 			<artifactId>jersey-client</artifactId>
-			<version>2.22</version>
+			<version>2.22.2</version>
 		</dependency>
 		<dependency>
 			<groupId>com.owlike</groupId>
@@ -67,14 +70,6 @@
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.3</version>
-				<configuration>
-					<warSourceDirectory>WebContent</warSourceDirectory>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
 				</configuration>
 			</plugin>
 		</plugins>
