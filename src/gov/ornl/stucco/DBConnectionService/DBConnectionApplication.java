@@ -27,45 +27,45 @@ public class DBConnectionApplication extends Application {
 //public class DBConnectionApplication extends ResourceConfig {
 public class DBConnectionApplication{
 
-	private final static int DEFAULT_API_PORT = 8080;
+    private final static int DEFAULT_API_PORT = 8080;
 
     public DBConnectionApplication () {
         try {
-			createHttpServer();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	System.out.println("APPLICATION WAS CREATED!!");
+            createHttpServer();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        System.out.println("APPLICATION WAS CREATED!!");
     }
 
-	private void createHttpServer() throws IOException {
-		DBConnectionSingleton dbSingleton = new DBConnectionSingleton();
-		ResourceConfig resConf = new ResourceConfig().register(new DBConnectionResource(dbSingleton));
-	    JdkHttpServerFactory.createHttpServer(getURI(), resConf);
-	}
+    private void createHttpServer() throws IOException {
+        DBConnectionSingleton dbSingleton = new DBConnectionSingleton();
+        ResourceConfig resConf = new ResourceConfig().register(new DBConnectionResource(dbSingleton));
+        JdkHttpServerFactory.createHttpServer(getURI(), resConf);
+    }
 
-	private static URI getURI() {
-	    return UriBuilder.fromUri("http://" + getHostName() + "/").port(DEFAULT_API_PORT).build(); //TODO: read port from config?
-	}
+    private static URI getURI() {
+        return UriBuilder.fromUri("http://" + getHostName() + "/").port(DEFAULT_API_PORT).build(); //TODO: read port from config?
+    }
 
-	private static String getHostName() {
-	    String hostName = "localhost";
-	    try {
-	        hostName = InetAddress.getLocalHost().getCanonicalHostName();
-	    } catch (UnknownHostException e) {
-	        e.printStackTrace();
-	    }
-	    return hostName;
-	}
+    private static String getHostName() {
+        String hostName = "localhost";
+        try {
+            hostName = InetAddress.getLocalHost().getCanonicalHostName();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        return hostName;
+    }
 
-	/**
-	 * The main method for the DBConnection service
-	 *
-	 * @param args Command line arguments
-	 */
-	public static void main(String[] args) {
-		//Start api server
-		new DBConnectionApplication();
-	}
+    /**
+     * The main method for the DBConnection service
+     *
+     * @param args Command line arguments
+     */
+    public static void main(String[] args) {
+        //Start api server
+        new DBConnectionApplication();
+    }
 }
