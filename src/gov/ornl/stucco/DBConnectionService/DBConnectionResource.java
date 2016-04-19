@@ -269,7 +269,7 @@ public class DBConnectionResource extends ResourceConfig {
     @Path("count/vertices")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
     public String countVertices(@QueryParam("q") String query) {
-        int count;
+        long count;
         if(query != null){
             System.out.println("search() query is: " + query);
             JSONObject queryObj = new JSONObject(query);
@@ -293,7 +293,7 @@ public class DBConnectionResource extends ResourceConfig {
     @Path("count/edges")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
     public String countEdges(@QueryParam("q") String query) {
-        int count;
+        long count;
         //TODO: can't query & count edges currently.  Is that even useful to have?
         count = db.getEdgeCount();
         JSONObject ret = new JSONObject();
