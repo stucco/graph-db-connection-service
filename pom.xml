@@ -3,13 +3,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>gov.ornl.stucco</groupId>
 	<artifactId>DBConnectionService</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>gov.pnnl.stucco</groupId>
 			<artifactId>DBConnect</artifactId>
-			<version>0.5.0</version>
+			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
