@@ -9,13 +9,13 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
 
-public class DBConnectionApplication{
+public class DBConnectionApplication {
 
     private final static int DEFAULT_API_PORT = 8080;
 
     public DBConnectionApplication () {
         try {
-            createHttpServer();
+            createHttpServer(); 
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -25,7 +25,9 @@ public class DBConnectionApplication{
 
     private void createHttpServer() throws IOException {
         DBConnectionSingleton dbSingleton = new DBConnectionSingleton();
-        ResourceConfig resConf = new ResourceConfig().register(new DBConnectionResource(dbSingleton));
+        ResourceConfig resConf = new ResourceConfig();
+        resConf.register(new DBConnectionResource(dbSingleton));
+        resConf.register(new Filter());
         JdkHttpServerFactory.createHttpServer(getURI(), resConf);
     }
 
