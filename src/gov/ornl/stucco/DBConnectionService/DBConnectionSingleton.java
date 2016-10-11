@@ -11,14 +11,13 @@ import javax.ws.rs.Path;
  * This singleton will maintain a persistent DBConnection object, which will be accessible when servicing requests.
  * NOTE: two environment variable must be defined:
  *       STUCCO_DB_CONFIG=<path/filename.yml>
- *       STUCCO_DB_TYPE= INMEMORY|ORIENTDB|TITAN|NEO4J
+ *       STUCCO_DB_TYPE= INMEMORY|ORIENTDB|TITAN|NEO4J|POSTGRESQL
  */
 @Path("/resource")
 @Singleton
 public class DBConnectionSingleton {
 
-    private static DBConnectionFactory factory;
-    private static DBConnectionAlignment db = null;
+    private DBConnectionFactory factory;
 
     public DBConnectionSingleton() {
         System.out.println("CREATING SINGLETON!!");
@@ -26,29 +25,27 @@ public class DBConnectionSingleton {
         String type = System.getenv("STUCCO_DB_TYPE");
         if (type == null) {
             throw (new NullPointerException("Missing environment variable STUCCO_DB_TYPE"));
-        }
-
-        factory = DBConnectionFactory.getFactory(DBConnectionFactory.Type.valueOf(type));
+        } 
 
         String config = System.getenv("STUCCO_DB_CONFIG");
         if (config == null) {
             throw (new NullPointerException("Missing environment variable STUCCO_DB_CONFIG"));
         }
+        factory = DBConnectionFactory.getFactory(DBConnectionFactory.Type.valueOf(type));
         factory.setConfiguration(config);
 
-        db = factory.getDBConnectionTestInterface();
-        db.open();
-
-        //if using INMEMORY, load some existing state.
-        if( type.equals("INMEMORY")){
-            InMemoryDBConnection inMemoryDB = (InMemoryDBConnection)db;
-            inMemoryDB.loadState("/home/euf/stuccoDB/graph.json"); //TODO: this is for testing & demo, change as needed.
-        }
         System.out.println("SINGLETON WAS CREATED!!");
     }
 
-    public DBConnectionAlignment getDB() {
+    private DBConnectionAlignment setDB() {
+        DBConnectionAlignment db = factory.getDBConnectionTestInterface();
+        db.open();
+
         return db;
+    }
+
+    public DBConnectionAlignment getDB() {
+        return setDB();
     }
 
 }
