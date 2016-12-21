@@ -33,13 +33,13 @@ public class DBConnectionSingleton {
         }
         factory = DBConnectionFactory.getFactory(DBConnectionFactory.Type.valueOf(type));
         factory.setConfiguration(config);
+        ((DBConnectionAlignment) factory.getDBConnectionTestInterface()).initDB();
 
         System.out.println("SINGLETON WAS CREATED!!");
     }
 
     private DBConnectionAlignment setDB() {
         DBConnectionAlignment db = factory.getDBConnectionTestInterface();
-        db.open();
 
         return db;
     }

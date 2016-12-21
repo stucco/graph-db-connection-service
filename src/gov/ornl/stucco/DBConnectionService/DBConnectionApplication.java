@@ -36,12 +36,16 @@ public class DBConnectionApplication {
     }
 
     private static String getHostName() {
-        String hostName = "localhost";
+        String hostName = System.getenv("STUCCO_HOST_IP");
+        hostName = (hostName == null) ? "localhost" : hostName;
+        /*
+        }
         try {
             hostName = InetAddress.getLocalHost().getCanonicalHostName();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
+        */
         return hostName;
     }
 
