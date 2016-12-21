@@ -10,6 +10,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
@@ -63,6 +64,8 @@ public class DBConnectionResource extends ResourceConfig {
 
     private JSONArray getInEdgesResults(String vertID, Map<String, Integer> pageInfo) throws IllegalArgumentException {
         DBConnectionAlignment db = dbSingleton.getDB();
+        db.open();
+
         List<Map<String, Object>> foundEdges = db.getInEdgesPage(vertID, pageInfo.get("page") * pageInfo.get("pageSize"), pageInfo.get("pageSize"));
         // System.out.println("inEdges found " + foundEdges.size() + " edges.");
         JSONArray results = new JSONArray();
@@ -123,6 +126,8 @@ public class DBConnectionResource extends ResourceConfig {
 
     private JSONArray getOutEdgesResults(String vertID, Map<String, Integer> pageInfo) throws IllegalArgumentException {
         DBConnectionAlignment db = dbSingleton.getDB();
+        db.open();
+
         List<Map<String, Object>> foundEdges = db.getOutEdgesPage(vertID, pageInfo.get("page") * pageInfo.get("pageSize"), pageInfo.get("pageSize"));
         //System.out.println(foundEdges);
         JSONArray results = new JSONArray();
@@ -169,7 +174,11 @@ public class DBConnectionResource extends ResourceConfig {
 
     private JSONObject getVertexResults(String vertID) {
         DBConnectionAlignment db = dbSingleton.getDB();
+        db.open();
+
+        System.out.println("db = " + db);
         Map<String,Object> vert = db.getVertByID(vertID);
+
         JSONObject results = new JSONObject();
         if (vert != null) {
             for (String k : vert.keySet()) {
@@ -184,15 +193,15 @@ public class DBConnectionResource extends ResourceConfig {
 
     @GET
     @Path("search")
+    @Consumes({ MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
     public String search(@QueryParam("q") String query) {
         System.out.println("search() query is: " + query);
+        
         JSONObject queryObj = new JSONObject(query);
-
         Map<String, Integer> pageInfo = findPageInfo(queryObj);
         queryObj.remove("page");
         queryObj.remove("pageSize");
-
         JSONArray results = searchResults(queryObj, pageInfo);
 
         JSONObject ret = new JSONObject();
@@ -207,6 +216,8 @@ public class DBConnectionResource extends ResourceConfig {
 
     private JSONArray searchResults(JSONObject queryObj, Map<String, Integer> pageInfo) {
         DBConnectionAlignment db = dbSingleton.getDB();
+        db.open();
+
         List<DBConstraint> constraints = new LinkedList<DBConstraint>();
         DBConstraint c;
         for (Object key : queryObj.keySet()) {
@@ -241,6 +252,8 @@ public class DBConnectionResource extends ResourceConfig {
 
     private JSONArray searchResults(JSONObject queryObj) {
         DBConnectionAlignment db = dbSingleton.getDB();
+        db.open();
+
         List<DBConstraint> constraints = new LinkedList<DBConstraint>();
         DBConstraint c;
         for (Object key : queryObj.keySet()) {
@@ -278,6 +291,8 @@ public class DBConnectionResource extends ResourceConfig {
     @Produces({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
     public String countVertices(@QueryParam("q") String query) {
         DBConnectionAlignment db = dbSingleton.getDB();
+        db.open();
+
         long count;
         if (query != null) {
             System.out.println("search() query is: " + query);
@@ -305,6 +320,8 @@ public class DBConnectionResource extends ResourceConfig {
     @Produces({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
     public String countEdges(@QueryParam("q") String query) {
         DBConnectionAlignment db = dbSingleton.getDB();
+        db.open();
+
         long count;
         //TODO: can't query & count edges currently.  Is that even useful to have?
         count = db.getEdgeCount();
