@@ -34,7 +34,7 @@ public class DBConnectionSingleton {
         }
         factory = DBConnectionFactory.getFactory(DBConnectionFactory.Type.valueOf(type));
         factory.setConfiguration(config);
-        DBConnectionAlignment db = factory.getDBConnectionTestInterface();
+        db = factory.getDBConnectionTestInterface();
 
         System.out.println("SINGLETON WAS CREATED!!");
     }
