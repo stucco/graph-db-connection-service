@@ -27,6 +27,7 @@ import gov.pnnl.stucco.dbconnect.DBConstraint;
 @Path("/api")
 public class DBConnectionResource extends ResourceConfig {
 
+    private final int CONNECTION_RETRIES = 3;
     DBConnectionSingleton dbSingleton;
 
     public DBConnectionResource(DBConnectionSingleton dbSingleton){
@@ -64,10 +65,8 @@ public class DBConnectionResource extends ResourceConfig {
 
     private JSONArray getInEdgesResults(String vertID, Map<String, Integer> pageInfo) throws IllegalArgumentException {
         DBConnectionAlignment db = dbSingleton.getDB();
-        db.open();
 
         List<Map<String, Object>> foundEdges = db.getInEdgesPage(vertID, pageInfo.get("page") * pageInfo.get("pageSize"), pageInfo.get("pageSize"));
-        // System.out.println("inEdges found " + foundEdges.size() + " edges.");
         JSONArray results = new JSONArray();
         for (Map<String,Object> edge : foundEdges) {
             // System.out.println("found edge with keys: " + edge.keySet());
@@ -91,7 +90,6 @@ public class DBConnectionResource extends ResourceConfig {
             resultItem.put(outV);
             results.put(resultItem);
         }
-        db.close();
 
         return results;
     }
@@ -100,7 +98,7 @@ public class DBConnectionResource extends ResourceConfig {
     @Path("outEdges/{vertID}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
     public String getOutEdges(@PathParam("vertID") String vertID, @QueryParam("q") String query) {
-        Map<String, Integer> pageInfo = null;
+      Map<String, Integer> pageInfo = null;
         if (query != null) {
             JSONObject queryObj = new JSONObject(query);
             pageInfo = findPageInfo(queryObj);
@@ -126,10 +124,8 @@ public class DBConnectionResource extends ResourceConfig {
 
     private JSONArray getOutEdgesResults(String vertID, Map<String, Integer> pageInfo) throws IllegalArgumentException {
         DBConnectionAlignment db = dbSingleton.getDB();
-        db.open();
 
         List<Map<String, Object>> foundEdges = db.getOutEdgesPage(vertID, pageInfo.get("page") * pageInfo.get("pageSize"), pageInfo.get("pageSize"));
-        //System.out.println(foundEdges);
         JSONArray results = new JSONArray();
         for (Map<String,Object> edge : foundEdges) {
             //System.out.println("found edge with keys: " + edge.keySet());
@@ -152,7 +148,6 @@ public class DBConnectionResource extends ResourceConfig {
             resultItem.put(inV);
             results.put(resultItem);
         } 
-        db.close();
 
         return results;
     }
@@ -174,9 +169,7 @@ public class DBConnectionResource extends ResourceConfig {
 
     private JSONObject getVertexResults(String vertID) {
         DBConnectionAlignment db = dbSingleton.getDB();
-        db.open();
 
-        System.out.println("db = " + db);
         Map<String,Object> vert = db.getVertByID(vertID);
 
         JSONObject results = new JSONObject();
@@ -186,7 +179,6 @@ public class DBConnectionResource extends ResourceConfig {
             }
             results.put("_id", vertID);
         }
-        db.close();
 
         return results;
     }
@@ -216,7 +208,6 @@ public class DBConnectionResource extends ResourceConfig {
 
     private JSONArray searchResults(JSONObject queryObj, Map<String, Integer> pageInfo) {
         DBConnectionAlignment db = dbSingleton.getDB();
-        db.open();
 
         List<DBConstraint> constraints = new LinkedList<DBConstraint>();
         DBConstraint c;
@@ -245,14 +236,12 @@ public class DBConnectionResource extends ResourceConfig {
             JSONObject foundVert = getVertexResults(id);
             results.put(foundVert);
         }
-        db.close();
 
         return results;
     }
 
     private JSONArray searchResults(JSONObject queryObj) {
         DBConnectionAlignment db = dbSingleton.getDB();
-        db.open();
 
         List<DBConstraint> constraints = new LinkedList<DBConstraint>();
         DBConstraint c;
@@ -281,7 +270,6 @@ public class DBConnectionResource extends ResourceConfig {
             JSONObject foundVert = getVertexResults(id);
             results.put(foundVert);
         }
-        db.close();
 
         return results;
     }
@@ -295,7 +283,6 @@ public class DBConnectionResource extends ResourceConfig {
 
         long count;
         if (query != null) {
-            System.out.println("search() query is: " + query);
             JSONObject queryObj = new JSONObject(query);
             queryObj.remove("page");
             queryObj.remove("pageSize");
@@ -310,6 +297,7 @@ public class DBConnectionResource extends ResourceConfig {
         ret.put("success",true);//TODO
         ret.put("version", ""); //TODO
         ret.put("queryTime", ""); //TODO
+
         db.close();
 
         return ret.toString();
@@ -330,6 +318,7 @@ public class DBConnectionResource extends ResourceConfig {
         ret.put("success",true); //TODO
         ret.put("version", ""); //TODO
         ret.put("queryTime", ""); //TODO
+
         db.close();
 
         return ret.toString();
