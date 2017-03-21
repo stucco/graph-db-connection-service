@@ -6,9 +6,9 @@ jdk:
   - openjdk7
   - oraclejdk8
 addons:
-  postgresql: "9.5"
+  postgresql: "9.6"
 env: 
-  - STUCCO_DB_TYPE=POSTGRESQL STUCCO_DB_CONFIG='./config/postgresql.yml'
+  - STUCCO_DB_TYPE=POSTGRESQL STUCCO_DB_CONFIG='./config/postgresql.yml' STUCCO_DB_CONFIG='./config/postgresql.yml' SITU_DB_CONFIG='./config/elasticsearch.yml'
 before_script:
   - ps aux | grep postgres
   - psql -c "CREATE USER stucco WITH PASSWORD 'stucco' CREATEDB CREATEROLE SUPERUSER REPLICATION;" -U postgres
@@ -17,7 +17,7 @@ install:
   - cat /proc/meminfo
   - cat /proc/cpuinfo
   - dpkg --get-selections
-  - mvn --non-recursive scm:checkout -Dmodule.name=graph-db-connection -DscmVersion=feature/bulkLoad -DscmVersionType=branch
+  - mvn --non-recursive scm:checkout -Dmodule.name=graph-db-connection -DscmVersion=sapphire -DscmVersionType=branch
   - cd graph-db-connection
   - mvn -e clean install -Dmaven.test.skip=true
   - cd ..
