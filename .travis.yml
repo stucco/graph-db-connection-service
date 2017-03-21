@@ -17,8 +17,13 @@ install:
   - cat /proc/meminfo
   - cat /proc/cpuinfo
   - dpkg --get-selections
+  - mvn 
   - mvn --non-recursive scm:checkout -Dmodule.name=graph-db-connection -DscmVersion=sapphire -DscmVersionType=branch
   - cd graph-db-connection
+  - mvn --non-recursive scm:checkout -Dmodule.name=STIXExtractors
+  - cd STIXExtractors
+  - mvn -e clean install -Dmaven.test.skip=true
+  - cd ..
   - mvn -e clean install -Dmaven.test.skip=true
   - cd ..
 after_success:
