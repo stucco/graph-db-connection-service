@@ -97,7 +97,6 @@ public class DBConnectionResource extends ResourceConfig {
         System.out.println("vertID: " +  vertID + " pageSize: " + pageSize + " page: " + page);
         DBConnectionAlignment db = dbSingleton.getDB();
         List<Map<String, Object>> foundEdges = db.getInEdgesPage(vertID, page * pageSize, pageSize);
-        System.out.println("foundEdges size: " + foundEdges.size());
 
         for (Map<String,Object> edge : foundEdges) {
             JSONObject outV = getVertexStucco((String)edge.get("outVertID"));
@@ -361,7 +360,7 @@ public class DBConnectionResource extends ResourceConfig {
         try {
             Connection con = dbSingleton.getES();
             List<DBConstraint> constraints = getSituConstraints(queryObj, con);
-            results = con.getVertsByConstraints((List<DBConstraint>) constraints, pageInfo.get("page") * pageInfo.get("pageSize"), pageInfo.get("pageSize"));
+            results = con.getVertsByConstraints((List<DBConstraint>) constraints, pageInfo.get("page"), pageInfo.get("pageSize"));
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
